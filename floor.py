@@ -19,12 +19,10 @@ st.sidebar.title('메뉴')
 selected_option = st.sidebar.radio('이동할 페이지를 선택하세요.', ['홈', '시각화 지도'])
 
 if selected_option == '홈':
-
     st.subheader('메인')
 
 elif selected_option == '시각화 지도':
-   
-    sub_option = st.sidebar.radio('페이지를 선택하세요.', ['시각화 지도', '막대 그래프', '히트맵'])
+    sub_option = st.sidebar.radio('페이지를 선택하세요.', ['시각화 지도', '막대 그래프', '히트맵', '건물 용도별 층수', '건물 용도 및 건축 연도별 분석'])
 
     if sub_option == '시각화 지도':
         st.subheader('서울시의 건물 분포:')
@@ -83,3 +81,38 @@ elif selected_option == '시각화 지도':
             title="서울시 건물 층 수 분포",
         )
         st.plotly_chart(fig)
+    
+    elif sub_option == '건물 용도별 층수':
+        st.subheader('건물 용도별 층수 분석')
+        building_types = gdf['건물용도'].unique()
+        selected_building_types = st.multiselect('건물 용도 선택', building_types, default=building_types)
+        
+        if selected_building_types:
+            filtered_gdf = gdf[gdf['건물용도'].isin(selected_building_types)]
+            fig = px.box(filtered_gdf, x='건물용도', y='층', points="all")
+            fig.update_layout(
+                title="건물 용도별 층수 분포",
+                xaxis_title="건물 용도",
+                yaxis_title="층수",
+                height=500
+            )
+            st.plotly_chart(fig)
+    
+    elif sub_option == '건물 용도 및 건축 연도별 분석':
+        st.subheader('건물 용도 및 건축 연도별 분석')
+        building_types = gdf['건물용도'].unique()
+        selected_building_types = st.multiselect('건물 용도 선택', building_types, default=building_types)
+        
+        construction_years = gdf['건축년도'].unique()
+        selected_construction_years = st.multiselect('건축 연도 선택', construction_years, default=construction_years)
+        
+        if selected_building_types and selected_construction_years:
+            filtered_gdf = gdf[gdf['건물용도'].isin(selected_building_types) & gdf['건축년도'].isin(selected_construction_years)]
+            fig = px.box(filtered_gdf, x='건물용도', y='층', color='건축년도', points="all")
+            fig.update_layout(
+                title="건물 용도 및 건축 연도별 층수 분포",
+                xaxis_title="건물 용도",
+                yaxis_title="층수",
+                height=500
+            )
+            st.plotly_chart(fig)

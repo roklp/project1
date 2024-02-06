@@ -103,7 +103,7 @@ elif selected_option == '시각화 지도':
         building_types = gdf['건물용도'].unique()
         selected_building_types = st.multiselect('건물 용도 선택', building_types, default=building_types)
         
-        construction_years = gdf['건축년도'].unique()
+        construction_years = sorted(gdf['건축년도'].unique())  # 건축 연도를 정렬
         selected_construction_years = st.multiselect('건축 연도 선택', construction_years, default=construction_years)
         
         if selected_building_types and selected_construction_years:
