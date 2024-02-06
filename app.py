@@ -5,7 +5,7 @@ import plotly.express as px
 import folium
 
 
-file_path = "C:/Users/한대희/Desktop/project1/sampled_data2.geojson"
+file_path = "./sampled_data2.geojson"
 gdf = gpd.read_file(file_path)
 
 
