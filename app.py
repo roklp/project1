@@ -103,8 +103,8 @@ elif selected_option == '시각화 지도':
         building_types = gdf['건물용도'].unique()
         selected_building_types = st.multiselect('건물 용도 선택', building_types, default=building_types)
         
-        construction_years = sorted(gdf['건축년도'].unique())  # 건축 연도를 정렬
-        selected_construction_years = st.multiselect('건축 연도 선택', construction_years, default=construction_years)
+        construction_years = sorted(gdf['건축년도'].unique())  
+        selected_construction_years = st.slider('건축 연도 선택', min_value=1960, max_value=2024, value=(1960, 2024))
         
         if selected_building_types and selected_construction_years:
             filtered_gdf = gdf[gdf['건물용도'].isin(selected_building_types) & gdf['건축년도'].isin(selected_construction_years)]
