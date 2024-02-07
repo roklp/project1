@@ -16,12 +16,9 @@ average_floors = gdf['층'].mean()
 st.write(f'서울시 건물의 평균 층수: {average_floors:.2f} 층')
 
 st.sidebar.title('메뉴')
-selected_option = st.sidebar.radio('이동할 페이지를 선택하세요.', ['홈', '시각화 지도'])
+selected_option = st.sidebar.radio('이동할 페이지를 선택하세요.', ['시각화 지도'])
 
-if selected_option == '홈':
-    st.subheader('메인')
-
-elif selected_option == '시각화 지도':
+if selected_option == '시각화 지도':
     sub_option = st.sidebar.radio('페이지를 선택하세요.', ['시각화 지도', '막대 그래프', '히트맵', '건물 용도별 층수', '건물 용도 및 건축 연도별 분석'])
 
     if sub_option == '시각화 지도':
@@ -74,14 +71,14 @@ elif selected_option == '시각화 지도':
             lat='centroid_lat', 
             lon='centroid_lon', 
             z='층', 
-            radius=10,
+            radius=30,  
             center=dict(lat=37.5665, lon=126.978),
             zoom=10,
             mapbox_style="carto-positron",
             title="서울시 건물 층 수 분포",
         )
         st.plotly_chart(fig)
-    
+
     elif sub_option == '건물 용도별 층수':
         st.subheader('건물 용도별 층수 분석')
         building_types = gdf['건물용도'].unique()
@@ -104,10 +101,10 @@ elif selected_option == '시각화 지도':
         selected_building_types = st.multiselect('건물 용도 선택', building_types, default=building_types)
         
         construction_years = sorted(gdf['건축년도'].unique())  
-        selected_construction_years = st.slider('건축 연도 선택', min_value=1960, max_value=2024, value=(1960, 2024))
+        selected_construction_years = st.selectbox('건축 연도 선택', options=construction_years, format_func=lambda x: f"{int(x)}년")
         
         if selected_building_types and selected_construction_years:
-            filtered_gdf = gdf[gdf['건물용도'].isin(selected_building_types) & gdf['건축년도'].isin(selected_construction_years)]
+            filtered_gdf = gdf[gdf['건물용도'].isin(selected_building_types) & gdf['건축년도'].isin([selected_construction_years])]
             fig = px.box(filtered_gdf, x='건물용도', y='층', color='건축년도', points="all")
             fig.update_layout(
                 title="건물 용도 및 건축 연도별 층수 분포",
